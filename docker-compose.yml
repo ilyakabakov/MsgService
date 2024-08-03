@@ -1,0 +1,52 @@
+
+services:
+  redis:
+    image: redis:latest
+    command:
+      - redis-server
+    restart: on-failure
+    ports:
+      - "6379:6379"
+
+  bot:
+    build:
+      context: ./chat_bot
+    env_file:
+      - ./chat_bot/.env
+    environment:
+      - PYTHONPATH=/app
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    restart: always
+    depends_on:
+      - web
+      - redis
+
+  web:
+    build:
+      context: ./web
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - REDIS_HOST=redis
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+
+  mongo:
+    image: mongo:4.2
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
