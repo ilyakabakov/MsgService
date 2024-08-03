@@ -48,7 +48,7 @@ MsgService/
     cd project
     ```
 
-2. Создайте файл `.env` и добавьте в него переменные окружения:
+2. Создайте файл `.env` в папке chat_bot и добавьте в него переменные окружения:
     ```sh
     TELEGRAM_TOKEN=your_telegram_bot_token
     ```
